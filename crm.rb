@@ -1,3 +1,13 @@
+class Runner
+  def prompt
+    puts "Please enter one of the following options: 'add', 'modify', 'display all', 'display contact', 'display attribute', 'delete', 'exit'"
+    call(gets.chomp)
+  end
+
+  def call
+  end
+end
+
 class Contact
   attr_accessor :id, :first_name, :last_name, :email, :notes
 
@@ -25,8 +35,10 @@ end
 class Rolodex
   @@contacts = 0
 
+  attr_reader :rolodex
+
   def initialize
-    @rolodex = []
+    rolodex = []
   end
 
   def add
@@ -40,7 +52,7 @@ class Rolodex
     notes = gets.chomp
 
     @@contacts += 1
-    @rolodex << Contact.new(@rolodex.length,f_name,l_name,email,notes)
+    rolodex << Contact.new(rolodex.length,f_name,l_name,email,notes)
   end
 
   def modify_contact
