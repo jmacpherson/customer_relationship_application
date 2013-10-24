@@ -1,47 +1,49 @@
-class Runner
-  def prompt
-    puts "Please enter one of the following options: 'add', 'modify', 'display all', 'display contact', 'display attribute', 'delete', 'exit'"
-    call(gets.chomp)
+require_relative "contact"
+require_relative "rolodex"
+
+class CRM
+  def self.prompt
+    puts "[1] Add a new contact"
+    puts "[2] Modify an existing contact"
+    puts "[3] Delete a contact"
+    puts "[4] Display all the contacts"
+    puts "[5] Display a contact"
+    puts "[6] Display an attribute" 
+    puts "[7] Exit"
+    puts "Enter a number: "
+    call_option(gets.chomp)
   end
 
-  def call
-  end
-end
-
-class Contact
-  attr_accessor :id, :first_name, :last_name, :email, :notes
-
-  def initialize(id_no, f_name, l_name, e_mail, note)
-    id = id_no
-    first_name = f_name
-    last_name = l_name
-    email = e_mail
-    notes = note
-  end
-
-  def contacts
-    @@contacts
-  end
-
-  def display_contact(id_no)
-    puts "ID: #{id}"
-    puts "First Name: #{first_name}"
-    puts "Last Name: #{last_name}"
-    puts "Email: #{email}"
-    puts "Notes: #{notes}"
-  end
-end
-
-class Rolodex
-  @@contacts = 0
-
-  attr_reader :rolodex
-
-  def initialize
-    rolodex = []
+  def self.call_option(option)
+    puts "\e[H\e[2J"
+    case option
+    when "1"
+      add
+    when "2"
+      modify_contact
+    when "3"
+    when "4"
+      display_contacts
+      puts "Press enter to return to the main menu."
+      gets
+      clear
+      prompt
+    when "5"
+    when "6"
+    when "7"
+      puts "Goodbye."
+      return
+    else
+      puts "Sorry, we don't have that option."
+      return prompt
+    end
   end
 
-  def add
+  def self.clear
+    puts "\e[H\e[2J"
+  end
+
+  def self.add
     puts "Please enter the contacts first name:"
     f_name = gets.chomp
     puts "Please enter the contacts last name:"
@@ -50,23 +52,43 @@ class Rolodex
     email = gets.chomp
     puts "Please enter any notes about the contact:"
     notes = gets.chomp
+    id = Rolodex.length + 1
+  
+    contact = Contact.new(id,f_name,l_name,email,notes)
+    Rolodex.add(contact)
 
-    @@contacts += 1
-    rolodex << Contact.new(rolodex.length,f_name,l_name,email,notes)
+    clear
+    puts "Contact added.\n\n"
+    prompt
   end
 
-  def modify_contact
+  def self.modify_contact
+    select_contact
+    puts "Which attribute would you like to modify?"
+    puts "[1] First Name"
+    puts "[2] Last Name"
+    puts "[3] Email"
+    puts "[4] Notes"
+    attribute = gets.chomp
+    Rolodex.modify_contact(id, attribute, new_value)
+    prompt
   end
 
-  def display_all_contacts
+  def self.display_contacts
+    Rolodex.display_all_contacts
   end
 
-  def display_particular_contact
+  def self.display_a_contact(id)
+    Rolodex.display_particular_contact(id)
   end
 
-  def display_info_by_attribute
-  end
-
-  def delete_contact
+  def self.select_contact
+    display_contacts
+    puts "Please enter the ID of the contact you would like to modify."
+    id = gets.to_i
+    clear
+    display_a_contact(id)
   end
 end
+
+CRM.prompt
