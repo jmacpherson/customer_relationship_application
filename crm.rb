@@ -22,13 +22,17 @@ class CRM
     when "2"
       modify_contact
     when "3"
+      delete_a_contact
     when "4"
       display_contacts
-      puts "Press enter to return to the main menu."
-      gets
-      clear
+      return_to_prompt
       prompt
     when "5"
+      id = select_contact_id("Please enter the id of the contact you would like to display")
+      clear
+      display_a_contact(id)
+      return_to_prompt
+      prompt
     when "6"
     when "7"
       puts "Goodbye."
@@ -63,14 +67,35 @@ class CRM
   end
 
   def self.modify_contact
-    select_contact
-    puts "Which attribute would you like to modify?"
-    puts "[1] First Name"
-    puts "[2] Last Name"
-    puts "[3] Email"
-    puts "[4] Notes"
-    attribute = gets.chomp
+    message = "Please enter the ID of the contact you would like to modify."
+    id = select_contact_id(message)
+    clear
+    display_a_contact(id)
+    
+    attribute = select_attribute    
+    unless attribute == "1" || attribute == "2" || attribute == "3" || attribute == "4"
+      until attribute == "1" || attribute == "2" || attribute == "3" || attribute == "4" do
+        clear
+        puts "Sorry, that's not a valid option.\n\n"
+        attribute = select_attribute
+      end
+    end
+
+    puts "What should this be?"
+    new_value = gets.chomp
+
     Rolodex.modify_contact(id, attribute, new_value)
+    puts "Contact modified.\n\n"
+    prompt
+  end
+
+  def self.delete_a_contact
+    display_contacts
+    message = "Which contact would you like to delete?\n\n"
+    id = select_contact_id(message)
+    Rolodex.delete_contact(id)
+    clear
+    puts "Contact deleted.\n\n"
     prompt
   end
 
@@ -82,12 +107,36 @@ class CRM
     Rolodex.display_particular_contact(id)
   end
 
-  def self.select_contact
+  def self.select_contact_id(message)
     display_contacts
-    puts "Please enter the ID of the contact you would like to modify."
+    puts "#{message}"
     id = gets.to_i
+    if Rolodex.contact(id).nil?
+      while Rolodex.contact(id).nil?
+        clear
+        puts "That contact doesn't exist.\n\n"
+        display_contacts
+        puts "Please select again.\n\n"
+        id = gets.to_i
+      end
+    end
+
+    return id
+  end
+
+  def self.select_attribute
+    puts "Which attribute would you like to modify?"
+    puts "[1] First Name"
+    puts "[2] Last Name"
+    puts "[3] Email"
+    puts "[4] Notes\n\n"
+    gets.chomp
+  end
+
+  def self.return_to_prompt
+    puts "Press enter to return to the main menu."
+    gets
     clear
-    display_a_contact(id)
   end
 end
 
