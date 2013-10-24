@@ -51,6 +51,16 @@ class Rolodex
     @@rolodex.each { |contact| contact.id = (@@rolodex.index(contact) + 1) }
   end
 
-  def display_info_by_attribute
+  def self.display_info_by_attribute(attribute)
+    case attribute
+    when "1"
+      @@rolodex.each { |contact| puts "First Name: #{contact.first_name}" }
+    when "2"
+      @@rolodex.each { |contact| puts "Last Name: #{contact.last_name}" }
+    when "3"
+      @@rolodex.each { |contact| puts "Email: #{contact.email}" }
+    when "4"
+      @@rolodex.each { |contact| puts "Notes: #{contact.notes}" }
+    end
   end
 end

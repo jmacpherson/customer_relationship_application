@@ -9,7 +9,7 @@ class CRM
     puts "[4] Display all the contacts"
     puts "[5] Display a contact"
     puts "[6] Display an attribute" 
-    puts "[7] Exit"
+    puts "[7] Exit\n\n"
     puts "Enter a number: "
     call_option(gets.chomp)
   end
@@ -26,14 +26,14 @@ class CRM
     when "4"
       display_contacts
       return_to_prompt
-      prompt
     when "5"
       id = select_contact_id("Please enter the id of the contact you would like to display")
       clear
       display_a_contact(id)
       return_to_prompt
-      prompt
     when "6"
+      display_attribute
+      return_to_prompt
     when "7"
       puts "Goodbye."
       return
@@ -67,19 +67,13 @@ class CRM
   end
 
   def self.modify_contact
-    message = "Please enter the ID of the contact you would like to modify."
-    id = select_contact_id(message)
+    id_message = "Please enter the ID of the contact you would like to modify."
+    id = select_contact_id(id_message)
     clear
     display_a_contact(id)
     
-    attribute = select_attribute    
-    unless attribute == "1" || attribute == "2" || attribute == "3" || attribute == "4"
-      until attribute == "1" || attribute == "2" || attribute == "3" || attribute == "4" do
-        clear
-        puts "Sorry, that's not a valid option.\n\n"
-        attribute = select_attribute
-      end
-    end
+    attribute_message = "Which attribute would you like to modify?"
+    attribute = select_attribute(attribute_message)
 
     puts "What should this be?"
     new_value = gets.chomp
@@ -90,7 +84,6 @@ class CRM
   end
 
   def self.delete_a_contact
-    display_contacts
     message = "Which contact would you like to delete?\n\n"
     id = select_contact_id(message)
     Rolodex.delete_contact(id)
@@ -105,6 +98,14 @@ class CRM
 
   def self.display_a_contact(id)
     Rolodex.display_particular_contact(id)
+  end
+
+  def self.display_attribute
+    display_message = "Which attribute would you like to display?"
+    attribute = select_attribute(display_message)
+    clear
+    Rolodex.display_info_by_attribute(attribute)
+    print "\n"
   end
 
   def self.select_contact_id(message)
@@ -124,19 +125,28 @@ class CRM
     return id
   end
 
-  def self.select_attribute
-    puts "Which attribute would you like to modify?"
+  def self.select_attribute(message)
+    puts "#{message}"
     puts "[1] First Name"
     puts "[2] Last Name"
     puts "[3] Email"
     puts "[4] Notes\n\n"
-    gets.chomp
+    attribute = gets.chomp
+
+    unless (attribute == "1") || (attribute == "2") || (attribute == "3") || (attribute == "4")
+      clear
+      puts "That's not a valid option.\n\n"
+      return select_attribute(message)
+    end
+
+    return attribute
   end
 
   def self.return_to_prompt
     puts "Press enter to return to the main menu."
     gets
     clear
+    prompt
   end
 end
 
