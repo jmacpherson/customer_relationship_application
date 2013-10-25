@@ -11,35 +11,41 @@ class CRM
     puts "[6] Display an attribute" 
     puts "[7] Exit\n\n"
     puts "Enter a number: "
-    call_option(gets.chomp)
+    
+    option = gets.to_i
+    unless (1..7).include?(option)
+      clear
+      puts "Sorry, that's not an option."
+      puts "Press enter to return to the prompt."
+      gets
+      return prompt
+    end
+    call_option(option)
   end
 
   def self.call_option(option)
-    puts "\e[H\e[2J"
+    clear
     case option
-    when "1"
+    when 1
       add
-    when "2"
+    when 2
       modify_contact
-    when "3"
+    when 3
       delete_a_contact
-    when "4"
+    when 4
       display_contacts
       return_to_prompt
-    when "5"
+    when 5
       id = select_contact_id("Please enter the id of the contact you would like to display")
       clear
       display_a_contact(id)
       return_to_prompt
-    when "6"
+    when 6
       display_attribute
       return_to_prompt
-    when "7"
+    when 7
       puts "Goodbye."
       return
-    else
-      puts "Sorry, we don't have that option."
-      return prompt
     end
   end
 
@@ -131,11 +137,13 @@ class CRM
     puts "[2] Last Name"
     puts "[3] Email"
     puts "[4] Notes\n\n"
-    attribute = gets.chomp
+    attribute = gets.to_i
 
-    unless (attribute == "1") || (attribute == "2") || (attribute == "3") || (attribute == "4")
+    unless (1..4).include? attribute
       clear
-      puts "That's not a valid option.\n\n"
+      puts "Sorry, that's not a valid option."
+      puts "Press enter to select again."
+      gets
       return select_attribute(message)
     end
 

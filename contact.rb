@@ -1,5 +1,3 @@
-# require_relative "rolodex"
-
 class Contact
   attr_accessor :id, :first_name, :last_name, :email, :notes
 
@@ -10,10 +8,6 @@ class Contact
     @email = e_mail
     @notes = note
   end
-
-  # def contacts
-  #   @@contacts
-  # end
 
   def display_contact
     puts "ID: #{@id}"
